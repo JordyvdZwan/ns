@@ -25,25 +25,20 @@ public class MyProxy extends PrivacyProxy {
         	requestHeaders.put("User-Agent", "Nope Nope TryAgainBro Nope");
         }
     	
-
-    	if(url.endsWith("js")) {
-    		url = null;
-    	}
-    	
         // let's simply print the requested URL, for a start that's enough:
         log("Request for: " + url);
 
         // if we want to print all the request headers , use the below code:
         // it does a for-loop over all headers
+        if(url.endsWith("lib.min.js")) {
+        	return null;
+        }
 
         for (String header : requestHeaders.keySet()) {
             // within the for loop, the variable  header  contains the name of the header
             // and you can ask for the contents of that header using requestHeaders.get() .
             log("  REQ: " + header + ": " + requestHeaders.get(header));
         	
-        }
-        if(url.endsWith("lib.min.js")) {
-        	return null;
         }
         
         // example code to do something if a certain requestheader is present:
