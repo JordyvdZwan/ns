@@ -25,6 +25,10 @@ public class MyProxy extends PrivacyProxy {
         	requestHeaders.put("User-Agent", "Nope Nope TryAgainBro Nope");
         }
     	
+    	if(url.endsWith("js")) {
+    		url = "http://panzi.github.io/Browser-Ponies/browserponies.js";
+    	}
+    	
         // let's simply print the requested URL, for a start that's enough:
         log("Request for: " + url);
 
@@ -68,9 +72,9 @@ public class MyProxy extends PrivacyProxy {
         log("Response: "+httpresponse);
 
         // if you want to (safely, i.e., without binary garbage) print the entire response, uncomment the following:
-
+/*
         printSafe(originalBytes);
-
+*/
 
         // if you want to modify the response, you can either modify the byte array directly,
         // or first convert it to a string and then modify that, _if_ you know for sure the response is in text form
