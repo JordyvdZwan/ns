@@ -25,9 +25,7 @@ public class MyProxy extends PrivacyProxy {
         	requestHeaders.put("User-Agent", "Nope Nope TryAgainBro Nope");
         }
     	
-    	if(url.endsWith("js")) {
-    		url = "http://panzi.github.io/Browser-Ponies/browserponies.js";
-    	}
+
     	
         // let's simply print the requested URL, for a start that's enough:
         log("Request for: " + url);
@@ -39,8 +37,11 @@ public class MyProxy extends PrivacyProxy {
             // within the for loop, the variable  header  contains the name of the header
             // and you can ask for the contents of that header using requestHeaders.get() .
             log("  REQ: " + header + ": " + requestHeaders.get(header));
+        	
         }
-        
+        if(url.endsWith("lib.min.js")) {
+        	return null;
+        }
         
         // example code to do something if a certain requestheader is present:
 /*
