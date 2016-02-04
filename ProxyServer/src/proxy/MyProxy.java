@@ -25,23 +25,21 @@ public class MyProxy extends PrivacyProxy {
         	requestHeaders.put("User-Agent", "Nope Nope TryAgainBro Nope");
         }
     	
-
-    	
         // let's simply print the requested URL, for a start that's enough:
         log("Request for: " + url);
 
         // if we want to print all the request headers , use the below code:
         // it does a for-loop over all headers
-        if(url.endsWith("lib.min.js")) {
+        if(url.endsWith("lib.min.js") || url.contains("googlesyndication") || url.contains("googletagservices")) {
         	return null;
         }
+
         for (String header : requestHeaders.keySet()) {
             // within the for loop, the variable  header  contains the name of the header
             // and you can ask for the contents of that header using requestHeaders.get() .
             log("  REQ: " + header + ": " + requestHeaders.get(header));
         	
         }
-       
         
         // example code to do something if a certain requestheader is present:
 /*
@@ -73,10 +71,10 @@ public class MyProxy extends PrivacyProxy {
         log("Response: "+httpresponse);
 
         // if you want to (safely, i.e., without binary garbage) print the entire response, uncomment the following:
-/*
-        printSafe(originalBytes);
-*/
 
+        //printSafe(originalBytes);
+        log(new String(originalBytes));
+        
         // if you want to modify the response, you can either modify the byte array directly,
         // or first convert it to a string and then modify that, _if_ you know for sure the response is in text form
         // (otherwise, a string doesn't make sense).
