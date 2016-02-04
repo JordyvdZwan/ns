@@ -25,13 +25,13 @@ public class MyProxy extends PrivacyProxy {
 
         // if we want to print all the request headers , use the below code:
         // it does a for-loop over all headers
-/*
+
         for (String header : requestHeaders.keySet()) {
             // within the for loop, the variable  header  contains the name of the header
             // and you can ask for the contents of that header using requestHeaders.get() .
             log("  REQ: " + header + ": " + requestHeaders.get(header));
         }
-*/
+
         // example code to do something if a certain requestheader is present:
 /*
         if (requestHeaders.containsKey("MyHeader")) ........
