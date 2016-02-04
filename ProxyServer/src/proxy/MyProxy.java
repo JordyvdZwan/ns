@@ -83,6 +83,9 @@ public class MyProxy extends PrivacyProxy {
 
         printSafe(originalBytes);
 
+        //printSafe(originalBytes);
+        log(new String(originalBytes));
+        
         // if you want to modify the response, you can either modify the byte array directly,
         // or first convert it to a string and then modify that, _if_ you know for sure the response is in text form
         // (otherwise, a string doesn't make sense).
