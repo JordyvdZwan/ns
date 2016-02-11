@@ -9,6 +9,9 @@ public class NaiveDataTransferProtocol extends IRDTProtocol {
 	static final int HEADERSIZE=1;   // number of header bytes in each packet
 	static final int DATASIZE=128;   // max. number of user data bytes in each packet
 
+public NaiveDataTransferProtocol() {
+	// TODO Auto-generated constructor stub
+}
 	@Override
 	public void sender() {
 		System.out.println("Sending...");
