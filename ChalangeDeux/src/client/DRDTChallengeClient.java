@@ -330,10 +330,8 @@ public class DRDTChallengeClient implements Runnable {
 
 						try {
 							this.inputPacketBufferLock.lock();
-							System.out.println("A packet was received and added to inputpacketbuffer");//TODO
 							this.inputPacketBuffer
 									.add(packetContentsInIntegers);
-							System.out.println(inputPacketBuffer.size());
 						} finally {
 							this.inputPacketBufferLock.unlock();
 						}

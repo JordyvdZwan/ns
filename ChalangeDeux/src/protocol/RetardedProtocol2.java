@@ -2,11 +2,13 @@ package protocol;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import client.*;
 
-public class RetardedProtocol extends IRDTProtocol {
+public class RetardedProtocol2 extends IRDTProtocol {
 
 	// change the following as you wish:
 	static final int HEADERSIZE=2;   // number of header bytes in each packet
@@ -21,6 +23,8 @@ public class RetardedProtocol extends IRDTProtocol {
 	static final int RWS=8;
 	private int LFR = 0;
 	private int LAF = RWS;
+	
+	Map<Integer, Boolean> acks = new HashMap<Integer, Boolean>();
 	
 	List<Integer[]> packets = new ArrayList<Integer[]>();
 	
@@ -41,6 +45,7 @@ public class RetardedProtocol extends IRDTProtocol {
 			// write something random into the header byte
 			pkt[0] = counter; 
 			pkt[1] = packets.size();
+			acks.put(counter, false);
 			// copy databytes from the input file into data part of the packet, i.e., after the header
 			System.arraycopy(fileContents, filePointer, pkt, HEADERSIZE, datalen);
 			packets.add(pkt);
@@ -66,6 +71,7 @@ public class RetardedProtocol extends IRDTProtocol {
 			if (packet != null) {
 				System.out.println("ACK received: " +  packet[0]);
 				Integer ack = packet[0];
+				acks.put(ack, true);
 				if (LAR < ack) {
 					LAR = ack;
 				}
@@ -87,7 +93,7 @@ public class RetardedProtocol extends IRDTProtocol {
 	public void TimeoutElapsed(Object tag) {
 		int z = (Integer) tag;
 		// handle expiration of the timeout:
-		if (z > LAR) {
+		if (z > LAR && !acks.get(z)) {
 			System.out.println("Timer expired with tag=" + z);
 			getNetworkLayer().sendPacket(packets.get(z));
 			System.out.println("Sent one packet with header = " + packets.get(z)[0]);
