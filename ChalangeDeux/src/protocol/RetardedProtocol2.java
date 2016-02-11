@@ -13,7 +13,7 @@ public class RetardedProtocol2 extends IRDTProtocol {
 	// change the following as you wish:
 	static final int HEADERSIZE=2;   // number of header bytes in each packet
 	static final int DATASIZE= 512;   // max. number of user data bytes in each packet
-	static final int TIMEOUT = 1000;
+	static final int TIMEOUT = 5000;
 	
 	static final int SWS=25;
 	private int LAR = -1;
@@ -153,8 +153,12 @@ public class RetardedProtocol2 extends IRDTProtocol {
 				Integer[] pkt = packets.get(0);
 				int i = 1;
 				while (pkt[0] != counter) {
-					pkt = packets.get(i);
-					i++;
+					if (i < packets.size()) {
+						pkt = packets.get(i);
+						i++;
+					} else {
+						break;
+					}
 				}
 				
 				int oldlength = fileContents.length;
