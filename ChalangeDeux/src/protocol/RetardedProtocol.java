@@ -11,13 +11,13 @@ public class RetardedProtocol extends IRDTProtocol {
 	// change the following as you wish:
 	static final int HEADERSIZE=2;   // number of header bytes in each packet
 	static final int DATASIZE=60;   // max. number of user data bytes in each packet
-	static final int TIMEOUT = 1000;
+	static final int TIMEOUT = 10000;
 	
-	static final int SWS=3;
+	static final int SWS=1;
 	private int LAR = 0;
 	private int LFS = 0;
 	
-	static final int RWS=3;
+	static final int RWS=1;
 	private int LFR = 0;
 	private int LAF = RWS;
 	
@@ -61,6 +61,7 @@ public class RetardedProtocol extends IRDTProtocol {
 			} else {
 				Integer[] packet = getNetworkLayer().receivePacket();
 				if (packet != null) {
+					System.out.println("ACK received: " +  packet[0]);
 					Integer ack = packet[0];
 					if (LAR < ack) {
 						LAR = ack;
@@ -114,7 +115,7 @@ public class RetardedProtocol extends IRDTProtocol {
 	public void TimeoutElapsed(Object tag) {
 		int z = (Integer) tag;
 		// handle expiration of the timeout:
-		if (z > LAR) {
+		if (z >= LAR) {
 			System.out.println("Timer expired with tag=" + z);
 			getNetworkLayer().sendPacket(packets.get(z));
 			System.out.println("Sent one packet with header = " + packets.get(z)[0]);
@@ -145,10 +146,12 @@ public class RetardedProtocol extends IRDTProtocol {
 				if (packet[0] <= LFR + RWS && packet[0] > LFR - 1) {
 					packets.add(packet);
 					// Sending the ACK
+					LFR = getLFR(packets);
 					Integer[] ackpkt = new Integer[1];
 					ackpkt[0] = LFR;
+					System.out.println("Sending packet with ack nr: " + ackpkt[0]);
 					getNetworkLayer().sendPacket(ackpkt);
-					LFR = getLFR(packets);
+					
 					// and let's just hope the file is now complete
 					if (LFR == packet[1] - 1) {
 						stop=true;
