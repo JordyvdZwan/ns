@@ -10,14 +10,14 @@ public class RetardedProtocol extends IRDTProtocol {
 
 	// change the following as you wish:
 	static final int HEADERSIZE=2;   // number of header bytes in each packet
-	static final int DATASIZE=248;   // max. number of user data bytes in each packet
+	static final int DATASIZE=60;   // max. number of user data bytes in each packet
 	static final int TIMEOUT = 1000;
 	
-	static final int SWS=1;
+	static final int SWS=3;
 	private int LAR = 0;
 	private int LFS = 0;
 	
-	static final int RWS=1;
+	static final int RWS=3;
 	private int LFR = 0;
 	private int LAF = RWS;
 	
@@ -46,6 +46,9 @@ public class RetardedProtocol extends IRDTProtocol {
 			filePointer += DATASIZE;
 			counter++;
 		}
+		for (Integer[] packet : packets) {
+			packet[1] = packets.size();
+		}
 		System.out.println("current state of data between packet seperation and sending");
 		System.out.println("packets size: " + packets.size());
 		
@@ -53,7 +56,7 @@ public class RetardedProtocol extends IRDTProtocol {
 			if (LFS < LAR + SWS && packets.size() > LFS) {
 				getNetworkLayer().sendPacket(packets.get(LFS));
 				System.out.println("Sent one packet with header = " + packets.get(LFS)[0]);
-				client.Utils.Timeout.SetTimeout(TIMEOUT, this, LFS + 1);
+				client.Utils.Timeout.SetTimeout(TIMEOUT, this, LFS);
 				LFS++;
 			} else {
 				Integer[] packet = getNetworkLayer().receivePacket();
@@ -138,18 +141,16 @@ public class RetardedProtocol extends IRDTProtocol {
 			// if we indeed received a packet
 			if (packet != null) {
 				// tell the user
-				System.out.println("Received packet, length="+packet.length+"  first byte="+packet[0] );
-				if (packet[0] <= LFR + RWS && packet[0] > LFR) {
+				System.out.println("Received packet, length="+packet.length+"  first byte="+packet[0]+"  second byte="+packet[1] );
+				if (packet[0] <= LFR + RWS && packet[0] > LFR - 1) {
 					packets.add(packet);
-					
 					// Sending the ACK
-					Integer[] ackpkt = new Integer[HEADERSIZE];
+					Integer[] ackpkt = new Integer[1];
 					ackpkt[0] = LFR;
 					getNetworkLayer().sendPacket(ackpkt);
-					
 					LFR = getLFR(packets);
 					// and let's just hope the file is now complete
-					if (LFR == packet[1]) {
+					if (LFR == packet[1] - 1) {
 						stop=true;
 					}
 				}
@@ -164,9 +165,11 @@ public class RetardedProtocol extends IRDTProtocol {
 			// append the packet's data part (excluding the header) to the fileContents array, first making it larger
 			
 		}
+		System.out.println("CHECK");
 		if (packets.size() > 0) {
+			System.out.println("CHECK");
 			int counter = 0;
-			while (counter <= packets.get(0)[1]) {
+			while (counter < packets.get(0)[1]) {
 				Integer[] pkt = packets.get(0);
 				int i = 1;
 				while (pkt[0] != counter) {
@@ -178,11 +181,14 @@ public class RetardedProtocol extends IRDTProtocol {
 				int datalen = pkt.length - HEADERSIZE;
 				fileContents = Arrays.copyOf(fileContents, oldlength+datalen);
 				System.arraycopy(pkt, HEADERSIZE, fileContents, oldlength, datalen);
+				counter++;
 			}
+			System.out.println("CHECK");
 		} else {
 			System.out.println("Well this is akward...");
 		}
-
+		System.out.println("CHECK");
+		System.out.println(fileContents.length);
 		// write to the output file
 		Utils.setFileContents(fileContents, getFileID());
 	}
@@ -190,7 +196,7 @@ public class RetardedProtocol extends IRDTProtocol {
 	public int getLFR(List<Integer[]> packets) {
 		int result = 0;
 		for (Integer[] packet : packets) {
-			if (packet[0] > result + 1) {
+			if (packet[0] == result + 1) {
 				result = getLFR(packets, packet[0]);
 				break;
 			}
@@ -200,7 +206,7 @@ public class RetardedProtocol extends IRDTProtocol {
 	
 	public int getLFR(List<Integer[]> packets, int result) {
 		for (Integer[] packet : packets) {
-			if (packet[0] > result + 1) {
+			if (packet[0] == result + 1) {
 				result = getLFR(packets, packet[0]);
 				break;
 			}
