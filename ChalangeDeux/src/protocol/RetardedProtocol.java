@@ -7,7 +7,7 @@ public class RetardedProtocol extends IRDTProtocol {
 
 	// change the following as you wish:
 	static final int HEADERSIZE=1;   // number of header bytes in each packet
-	static final int DATASIZE=128;   // max. number of user data bytes in each packet
+	static final int DATASIZE=248;   // max. number of user data bytes in each packet
 
 	@Override
 	public void sender() {
@@ -37,6 +37,26 @@ public class RetardedProtocol extends IRDTProtocol {
 		// and loop and sleep; you may use this loop to check for incoming acks...
 		boolean stop = false;
 		while (!stop) {
+			Integer[] packet = getNetworkLayer().receivePacket();
+			if (packet != null) {
+
+				// tell the user
+				System.out.println("Received packet, length="+packet.length+"  first byte="+packet[0] );
+				if (packet[0] == 123) {
+					System.out.println("ACK was received correctly");
+				} else {
+					System.out.println("ACK was received incorrectly");
+				}
+				
+				stop=true;
+			}else{
+				// wait ~10ms (or however long the OS makes us wait) before trying again
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					stop = true;
+				}
+			}
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
@@ -48,9 +68,9 @@ public class RetardedProtocol extends IRDTProtocol {
 
 	@Override
 	public void TimeoutElapsed(Object tag) {
-		int z=(Integer)tag;
+		int z = (Integer) tag;
 		// handle expiration of the timeout:
-		System.out.println("Timer expired with tag="+z);
+		System.out.println("Timer expired with tag=" + z);
 	}
 
 	@Override
@@ -76,11 +96,14 @@ public class RetardedProtocol extends IRDTProtocol {
 				System.out.println("Received packet, length="+packet.length+"  first byte="+packet[0] );
 
 				// append the packet's data part (excluding the header) to the fileContents array, first making it larger
-				int oldlength=fileContents.length;
-				int datalen= packet.length - HEADERSIZE;
+				int oldlength = fileContents.length;
+				int datalen = packet.length - HEADERSIZE;
 				fileContents = Arrays.copyOf(fileContents, oldlength+datalen);
 				System.arraycopy(packet, HEADERSIZE, fileContents, oldlength, datalen);
-
+				
+				Integer[] ackpkt = new Integer[HEADERSIZE];
+				ackpkt[0] = 123;
+				getNetworkLayer().sendPacket(ackpkt);
 				// and let's just hope the file is now complete
 				stop=true;
 
