@@ -46,6 +46,8 @@ public class RetardedProtocol extends IRDTProtocol {
 			filePointer += DATASIZE;
 			counter++;
 		}
+		System.out.println("current state of data between packet seperation and sending");
+		System.out.println("packets size: " + packets.size());
 		
 		while (LAR < packets.size()) {
 			if (LFS < LAR + SWS && packets.size() > LFS) {
