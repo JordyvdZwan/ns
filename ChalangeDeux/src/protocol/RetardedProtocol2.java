@@ -71,7 +71,7 @@ public class RetardedProtocol2 extends IRDTProtocol {
 			if (packet != null) {
 				System.out.println("ACK received: " +  packet[0]);
 				Integer ack = packet[0];
-				acks.put(ack, true);
+				acks.put(packet[1], true);
 				if (LAR < ack) {
 					LAR = ack;
 				}
@@ -125,8 +125,9 @@ public class RetardedProtocol2 extends IRDTProtocol {
 					packets.add(packet);
 					// Sending the ACK
 					LFR = getLFR(packets);
-					Integer[] ackpkt = new Integer[1];
+					Integer[] ackpkt = new Integer[2];
 					ackpkt[0] = LFR;
+					ackpkt[1] = packet[0];
 					System.out.println("Sending packet with ack nr: " + ackpkt[0]);
 					getNetworkLayer().sendPacket(ackpkt);
 					
