@@ -10,7 +10,7 @@ public class RetardedProtocol extends IRDTProtocol {
 
 	// change the following as you wish:
 	static final int HEADERSIZE=2;   // number of header bytes in each packet
-	static final int DATASIZE= 800;   // max. number of user data bytes in each packet
+	static final int DATASIZE= 600;   // max. number of user data bytes in each packet
 	static final int TIMEOUT = 4000;
 	
 	static final int SWS=8;
