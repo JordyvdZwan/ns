@@ -160,21 +160,26 @@ public class RetardedProtocol extends IRDTProtocol {
 				}
 			}
 			// append the packet's data part (excluding the header) to the fileContents array, first making it larger
-			int counter = 0;
-			while (counter <= packets.get(0)[1]) {
-				Integer[] pkt = packets.get(0);
-				int i = 1;
-				while (pkt[0] != counter) {
-					pkt = packets.get(i);
-					i++;
+			if (packets.size() > 0) {
+				int counter = 0;
+				while (counter <= packets.get(0)[1]) {
+					Integer[] pkt = packets.get(0);
+					int i = 1;
+					while (pkt[0] != counter) {
+						pkt = packets.get(i);
+						i++;
+					}
+					
+					int oldlength = fileContents.length;
+					int datalen = pkt.length - HEADERSIZE;
+					fileContents = Arrays.copyOf(fileContents, oldlength+datalen);
+					System.arraycopy(pkt, HEADERSIZE, fileContents, oldlength, datalen);
 				}
-				
-				int oldlength = fileContents.length;
-				int datalen = pkt.length - HEADERSIZE;
-				fileContents = Arrays.copyOf(fileContents, oldlength+datalen);
-				System.arraycopy(pkt, HEADERSIZE, fileContents, oldlength, datalen);
+			} else {
+				System.out.println("Well this is akward...");
 			}
 		}
+		
 
 		// write to the output file
 		Utils.setFileContents(fileContents, getFileID());
