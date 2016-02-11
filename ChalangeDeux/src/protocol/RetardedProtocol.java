@@ -10,14 +10,14 @@ public class RetardedProtocol extends IRDTProtocol {
 
 	// change the following as you wish:
 	static final int HEADERSIZE=2;   // number of header bytes in each packet
-	static final int DATASIZE=60;   // max. number of user data bytes in each packet
+	static final int DATASIZE= 300;   // max. number of user data bytes in each packet
 	static final int TIMEOUT = 10000;
 	
-	static final int SWS=1;
-	private int LAR = 0;
+	static final int SWS=8;
+	private int LAR = -1;
 	private int LFS = 0;
 	
-	static final int RWS=1;
+	static final int RWS=8;
 	private int LFR = 0;
 	private int LAF = RWS;
 	
@@ -52,70 +52,41 @@ public class RetardedProtocol extends IRDTProtocol {
 		System.out.println("current state of data between packet seperation and sending");
 		System.out.println("packets size: " + packets.size());
 		
-		while (LAR < packets.size()) {
-			if (LFS < LAR + SWS && packets.size() > LFS) {
+		while (LAR + 1 < packets.size()) {
+			if (LFS - 1 < LAR + SWS && packets.size() > LFS) {
 				getNetworkLayer().sendPacket(packets.get(LFS));
 				System.out.println("Sent one packet with header = " + packets.get(LFS)[0]);
 				client.Utils.Timeout.SetTimeout(TIMEOUT, this, LFS);
 				LFS++;
-			} else {
-				Integer[] packet = getNetworkLayer().receivePacket();
-				if (packet != null) {
-					System.out.println("ACK received: " +  packet[0]);
-					Integer ack = packet[0];
-					if (LAR < ack) {
-						LAR = ack;
-					}
+			}
+//			System.out.println("TEST 1");
+			Integer[] packet = getNetworkLayer().receivePacket();
+//			System.out.println("TEST 2");
+			if (packet != null) {
+				System.out.println("ACK received: " +  packet[0]);
+				Integer ack = packet[0];
+				if (LAR < ack) {
+					LAR = ack;
 				}
+			}
+//			System.out.println("TEST 3");
+			
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 		
 		
 		System.out.println("So... did it work..?");
-//		// send the packet to the network layer
-//		getNetworkLayer().sendPacket(pkt);
-//		System.out.println("Sent one packet with header="+pkt[0]);
-//
-//		// schedule a timer for 1000 ms into the future, just to show how that works:
-//		client.Utils.Timeout.SetTimeout(1000, this, 28);
-//
-//		// and loop and sleep; you may use this loop to check for incoming acks...
-//		boolean stop = false;
-//		while (!stop) {
-//			Integer[] packet = getNetworkLayer().receivePacket();
-//			if (packet != null) {
-//
-//				// tell the user
-//				System.out.println("Received packet, length="+packet.length+"  first byte="+packet[0] );
-//				if (packet[0] == 123) {
-//					System.out.println("ACK was received correctly");
-//				} else {
-//					System.out.println("ACK was received incorrectly");
-//				}
-//				
-//				stop=true;
-//			}else{
-//				// wait ~10ms (or however long the OS makes us wait) before trying again
-//				try {
-//					Thread.sleep(10);
-//				} catch (InterruptedException e) {
-//					stop = true;
-//				}
-//			}
-//			try {
-//				Thread.sleep(10);
-//			} catch (InterruptedException e) {
-//				stop = true;
-//			}
-//		}
-
 	}
 
 	@Override
 	public void TimeoutElapsed(Object tag) {
 		int z = (Integer) tag;
 		// handle expiration of the timeout:
-		if (z >= LAR) {
+		if (z > LAR) {
 			System.out.println("Timer expired with tag=" + z);
 			getNetworkLayer().sendPacket(packets.get(z));
 			System.out.println("Sent one packet with header = " + packets.get(z)[0]);
@@ -152,7 +123,7 @@ public class RetardedProtocol extends IRDTProtocol {
 					System.out.println("Sending packet with ack nr: " + ackpkt[0]);
 					getNetworkLayer().sendPacket(ackpkt);
 					
-					// and let's just hope the file is now complete
+					// and let's just see if the file is now complete
 					if (LFR == packet[1] - 1) {
 						stop=true;
 					}

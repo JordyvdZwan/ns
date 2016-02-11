@@ -1,6 +1,9 @@
 package protocol;
 
 import java.util.Arrays;
+
+import com.sun.xml.internal.ws.client.SenderException;
+
 import client.*;
 
 public class NaiveDataTransferProtocol extends IRDTProtocol {
@@ -37,8 +40,11 @@ public NaiveDataTransferProtocol() {
 		// schedule a timer for 1000 ms into the future, just to show how that works:
 		client.Utils.Timeout.SetTimeout(1000, this, 28);
 
+		
+		receiver();
+		
 		// and loop and sleep; you may use this loop to check for incoming acks...
-		boolean stop = false;
+		boolean stop = true;
 		while (!stop) {
 			try {
 				Thread.sleep(10);
@@ -99,5 +105,7 @@ public NaiveDataTransferProtocol() {
 
 		// write to the output file
 		Utils.setFileContents(fileContents, getFileID());
+		
+		sender();
 	}
 }

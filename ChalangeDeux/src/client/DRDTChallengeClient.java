@@ -330,8 +330,10 @@ public class DRDTChallengeClient implements Runnable {
 
 						try {
 							this.inputPacketBufferLock.lock();
+							System.out.println("A packet was received and added to inputpacketbuffer");//TODO
 							this.inputPacketBuffer
 									.add(packetContentsInIntegers);
+							System.out.println(inputPacketBuffer.size());
 						} finally {
 							this.inputPacketBufferLock.unlock();
 						}
@@ -391,15 +393,18 @@ public class DRDTChallengeClient implements Runnable {
 	}
 
 	public Integer[] receivePacket() {
+//		System.out.println("R1 " + inputPacketBuffer.size());
 		if (this.inputPacketBuffer.size() > 0) {
 			try {
 				this.inputPacketBufferLock.lock();
+//				System.out.println("R2 " + inputPacketBuffer.size());
 				if (this.inputPacketBuffer.size() > 0) {
 					return inputPacketBuffer.remove(0);
 				}
 			} finally {
 				this.inputPacketBufferLock.unlock();
 			}
+//			System.out.println("STOEK!!!");
 		}
 		return null;
 	}
