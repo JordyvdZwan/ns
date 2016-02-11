@@ -12,15 +12,15 @@ public class RetardedProtocol2 extends IRDTProtocol {
 
 	// change the following as you wish:
 	static final int HEADERSIZE=2;   // number of header bytes in each packet
-	static final int DATASIZE= 600;   // max. number of user data bytes in each packet
-	static final int TIMEOUT = 4000;
+	static final int DATASIZE= 512;   // max. number of user data bytes in each packet
+	static final int TIMEOUT = 1000;
 	
-	static final int SWS=8;
+	static final int SWS=25;
 	private int LAR = -1;
 	private int LFS = 0;
 	
 	
-	static final int RWS=8;
+	static final int RWS=25;
 	private int LFR = 0;
 	private int LAF = RWS;
 	
@@ -69,7 +69,7 @@ public class RetardedProtocol2 extends IRDTProtocol {
 			Integer[] packet = getNetworkLayer().receivePacket();
 //			System.out.println("TEST 2");
 			if (packet != null) {
-				System.out.println("ACK received: " +  packet[0]);
+				System.out.println("ACK received: " +  packet[0] + "..." + packet[1]);
 				Integer ack = packet[0];
 				acks.put(packet[1], true);
 				if (LAR < ack) {
@@ -128,7 +128,7 @@ public class RetardedProtocol2 extends IRDTProtocol {
 					Integer[] ackpkt = new Integer[2];
 					ackpkt[0] = LFR;
 					ackpkt[1] = packet[0];
-					System.out.println("Sending packet with ack nr: " + ackpkt[0]);
+					System.out.println("Sending packet with ack nr: " + ackpkt[0] + "..." + ackpkt[1]);
 					getNetworkLayer().sendPacket(ackpkt);
 					
 					// and let's just see if the file is now complete
