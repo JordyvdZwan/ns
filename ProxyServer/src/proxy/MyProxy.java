@@ -73,7 +73,7 @@ public class MyProxy extends PrivacyProxy {
         // if you want to (safely, i.e., without binary garbage) print the entire response, uncomment the following:
 
         //printSafe(originalBytes);
-        log(new String(originalBytes));
+        //log(new String(originalBytes));
         
         // if you want to modify the response, you can either modify the byte array directly,
         // or first convert it to a string and then modify that, _if_ you know for sure the response is in text form
