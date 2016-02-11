@@ -33,7 +33,7 @@ public class RetardedProtocol extends IRDTProtocol {
 		// keep track of where we are in the data
 		int filePointer = 0;
 		int counter = 0;
-		while (filePointer > 0) {
+		while (filePointer < fileContents.length) {
 			// create a new packet of appropriate size
 			int datalen = Math.min(DATASIZE, fileContents.length - filePointer);
 			Integer[] pkt = new Integer[HEADERSIZE + datalen];
