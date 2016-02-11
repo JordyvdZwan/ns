@@ -28,7 +28,7 @@ public class Program {
 	private static int file = 5;
 
 	// Change to your protocol implementation
-	private static IRDTProtocol protocolImpl = new RetardedProtocol();
+	private static IRDTProtocol protocolImpl = new RetardedProtocol2();
 
 	// Challenge server address
 	private static String serverAddress = "netsys.student.utwente.nl";
