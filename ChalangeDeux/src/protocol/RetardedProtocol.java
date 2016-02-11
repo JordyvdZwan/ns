@@ -52,7 +52,7 @@ public class RetardedProtocol extends IRDTProtocol {
 		while (LAR < packets.size()) {
 			if (LFS < LAR + SWS && packets.size() > LFS) {
 				getNetworkLayer().sendPacket(packets.get(LFS));
-				System.out.println("Sent one packet with header = " + packets.get(LFS + 1)[0]);
+				System.out.println("Sent one packet with header = " + packets.get(LFS)[0]);
 				client.Utils.Timeout.SetTimeout(TIMEOUT, this, LFS + 1);
 				LFS++;
 			} else {
