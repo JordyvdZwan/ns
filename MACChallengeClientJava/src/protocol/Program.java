@@ -18,10 +18,10 @@ public class Program implements Runnable {
 
 	// Change to your group password (doesn't matter what it is,
 	// as long as everyone in the group uses the same string)
-	private static String password = "changeme";
+	private static String password = "miranda";
 
 	// Change to your protocol implementation
-	private static IMACProtocol protocol = new SlottedAlohaSimplified();
+	private static IMACProtocol protocol = new LeapProtocol();
 
 	// Challenge server address
 	private static String serverAddress = "netsys.student.utwente.nl";
