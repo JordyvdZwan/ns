@@ -21,7 +21,7 @@ public class Program implements Runnable {
 	private static String password = "miranda";
 
 	// Change to your protocol implementation
-	private static IMACProtocol protocol = new LeapProtocol();
+	private static IMACProtocol protocol = new MasterProtocol();
 
 	// Challenge server address
 	private static String serverAddress = "netsys.student.utwente.nl";
