@@ -3,11 +3,6 @@ package Location;
 import java.util.HashMap;
 import Utils.*;
 
-/**
- * Simple Location finder that returns the first known APs location from the list of received MAC addresses
- * @author Bernd
- *
- */
 public class TestingLocationFinder implements LocationFinder{
 	
 	private HashMap<String, Position> knownLocations; //Contains the known locations of APs. The long is a MAC address.
@@ -22,7 +17,6 @@ public class TestingLocationFinder implements LocationFinder{
 	
 	@Override
 	public Position locate(MacRssiPair[] data) {
-		printMacs(data); //print all the received data
 		if (getpair(data) != null) {
 			counter++;
 			total = total + getpair(data).getRssi();
@@ -33,7 +27,6 @@ public class TestingLocationFinder implements LocationFinder{
 			System.out.println("Average : " + average);
 		}
 		return new Position(0, 0);
-//		return getFirstKnownFromList(data); //return the first known APs location
 	}
 	
 	/**
@@ -51,14 +44,4 @@ public class TestingLocationFinder implements LocationFinder{
 		}
 		return pair;
 	}
-	
-	/**
-	 * Outputs all the received MAC RSSI pairs to the standard out
-	 * This method is provided so you can see the data you are getting
-	 * @param data
-	 */
-	private void printMacs(MacRssiPair[] data) {
-
-	}
-
 }
